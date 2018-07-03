@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <nav class="navbar navbar-light navbar-expand-lg bg-light">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a class="navbar-brand" asp-action="Index" asp-controller="Home">CoreBB</a>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a asp-action="Index" asp-controller="Home" class="nav-link">Home</a></li>
+                <li class="nav-item"><a asp-action="Index" asp-controller="Forum" class="nav-link">Forums</a></li>
+                <li class="nav-item"><a asp-action="Index" asp-controller="Message" class="nav-link">Messages</a></li>
+                @if (User.IsInRole(Roles.Administrator))
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-action="Index" asp-controller="User">Users</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" asp-action="Create" asp-controller="Forum">Create Forum</a>
+                        </div>
+                    </li>
+                }
+            </ul>
+            
+            <div class="pull-right">
+                <div class="btn-group btn-group-sm">
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a class="btn btn-secondary btn-info" asp-action="Login" asp-controller="User">Login</a>
+                    <a class="btn btn-secondary btn-info" asp-action="Register" asp-controller="User">Register</a>
+                }
+                else
+                {
+                    <a class="btn btn-secondary btn-info" asp-action="Detail" asp-controller="User"
+                       asp-route-name="@User.Identity.Name">'@User.Identity.Name' Account</a>
+                    <a class="btn btn-secondary btn-info" asp-action="LogOut" asp-controller="User">Log out</a>
+                }
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        @RenderBody()
+    </div>
+    <hr />
+    <footer>
+        <p>&copy; 2018 - CoreBB</p>
+    </footer>
+</body>
+</html>
