@@ -1,0 +1,92 @@
+﻿@model User
+@inject CoreBBContext _dbContext
+
+@{
+    ViewData["Title"] = $"'{@Model.Name}' Details";
+    int currentUserId = _dbContext.User.SingleOrDefault(u => u.Name == User.Identity.Name).Id;
+}
+
+<div class="container col-6 offset-3">
+    <div class="card border-info" style="margin-top: 120px">
+        <h2 class="card-header bg-info text-white">Account Details</h2>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    @if (User.IsInRole(Roles.Administrator))
+            {
+                        <tr>
+                            <td><strong>ID</strong></td>
+                            <td>@Model.Id</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td><strong>Name</strong></td>
+                        <td>@Model.Name</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Description</strong></td>
+                        <td>@Model.Description</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Registeration Date</strong></td>
+                        <td>@Model.RegisterDateTime</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Last Login Date</strong></td>
+                        <td>@Model.LastLoginDateTime</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Locked?</strong></td>
+                        <td><input type="checkbox" asp-for="IsLocked" disabled="disabled" /></td>
+                    </tr>
+                    @if (User.IsInRole(Roles.Administrator))
+                    {
+                        <tr>
+                            <td><strong>Admin?</strong></td>
+                            <td><input type="checkbox" asp-for="IsAdministrator" disabled="disabled" /></td>
+                        </tr>
+                    }
+                    <tr class="text-center">
+                        <td colspan="2">
+                            @if (User.IsInRole(Roles.Administrator) || User.Identity.Name == Model.Name)
+                            {
+                                <a class="btn btn-warning" asp-action="Edit" asp-route-name="@Model.Name">Edit</a>
+                                <button class="btn btn-danger delete" type="button" value="@Model.Name">Delete</button>
+                            }
+                            @if (currentUserId != Model.Id)
+                            {
+                                <a class="btn btn-success" asp-controller="Message" asp-action="Detail"
+                                   asp-route-user1="@currentUserId" asp-route-user2="@Model.Id">Send Message</a>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(".delete").on("click", function (events) {
+        var userName = $(this).attr("value");
+        $.ajax({
+            url: '/User/DeleteForm',
+            context: this,
+            type: 'GET',
+            data: { name: userName },
+            success: function (data) {
+                $(this).parents(".card").after(data);
+            },
+            error: function () {
+                $(this).parents(".card").after('<p class="text-danger">Error! Can\'t get user</p>');
+            }
+        });
+        $(this).hide();
+    });
+
+    $(document).on("click", ".cancel", function (events) {
+        $(this).parents(".container").find("button").show();
+        $(this).parents(".card").remove();
+    })
+</script>
+

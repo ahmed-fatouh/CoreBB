@@ -1,0 +1,43 @@
+﻿@model EditUserInfoViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container col-6 offset-3">
+    <div class="card border-info" style="margin-top: 120px">
+        <h2 class="card-header bg-info text-white">Edit Details</h2>
+        <div class="card-body">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="CurrentName"/>
+                <div class="form-group">
+                    <label asp-for="NewName"></label>
+                    <input asp-for="NewName" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description"></label>
+                    <input asp-for="Description" class="form-control" />
+                </div>
+                @if (User.IsInRole(Roles.Administrator) && User.Identity.Name != Model.CurrentName)
+                {
+                    <div class="form-group">
+                        <label asp-for="IsAdministrator"></label>
+                        <input asp-for="IsAdministrator" class="form-check-inline float-right" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="IsLocked"></label>
+                        <input asp-for="IsLocked" class="form-check-inline float-right" />
+                    </div>
+                }
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="ChangePassword" asp-route-name="@Model.CurrentName"
+                       class="btn btn-warning">Change Password</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

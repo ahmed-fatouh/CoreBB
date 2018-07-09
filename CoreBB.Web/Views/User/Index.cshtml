@@ -1,0 +1,34 @@
+﻿@model IEnumerable<User>
+
+@{
+    ViewData["Title"] = "Users List";
+}
+
+<table class="table table-bordered table-striped mt-5">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Registeration Date</th>
+            <th>Last Login Time</th>
+            <th>Administrator?</th>
+            <th>Locked?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (User u in Model)
+        {
+            <tr>
+                <td>@u.Id</td>
+                <td>@u.Name</td>
+                <td>@u.RegisterDateTime.ToShortDateString()</td>
+                <td>@u.LastLoginDateTime</td>
+                <td><input type="checkbox" asp-for="@u.IsAdministrator" disabled/></td>
+                <td><input type="checkbox" asp-for="@u.IsLocked" disabled/></td>
+                <td class="text-center"><a asp-action="Detail" asp-route-name="@u.Name" 
+                                           class="btn btn-primary btn-sm">Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
