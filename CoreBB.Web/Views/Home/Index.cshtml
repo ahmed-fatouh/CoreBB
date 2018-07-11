@@ -1,4 +1,6 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnv
+
+@{
     ViewData["Title"] = "CoreBB Home";
 }
 
@@ -54,25 +56,50 @@
                 <li data-target="#carousel" data-slide-to="2"></li>
                 <li data-target="#carousel" data-slide-to="3"></li>
             </ol>
+            
             <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="~/Content/img/asp-net-core-mvc-codeOpinion.png" alt="ASP.Net Core MVC" />
-                    <div class="carousel-caption d-none d-md-block">
-                        <p>Image Source: codeopinion.com</p>
+                @if (hostingEnv.EnvironmentName == "Development")
+                {
+                    <div class="carousel-item active">
+                        <img src="~/Content/img/asp-net-core-mvc-codeOpinion.png" alt="ASP.Net Core MVC" />
+                        <div class="carousel-caption d-none d-md-block">
+                            <p>Image Source: codeopinion.com</p>
+                        </div>
                     </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="~/Content/img/entity-framework-core-codeOpinion.png" alt="Entity Framework Core" />
-                    <div class="carousel-caption d-none d-md-block">
-                        <p>Image Source: codeopinion.com</p>
+                    <div class="carousel-item">
+                        <img src="~/Content/img/entity-framework-core-codeOpinion.png" alt="Entity Framework Core" />
+                        <div class="carousel-caption d-none d-md-block">
+                            <p>Image Source: codeopinion.com</p>
+                        </div>
                     </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="~/Content/img/bootstrap-stack.png" alt="Bootstrap" />
-                </div>
-                <div class="carousel-item">
-                    <img src="~/Content/img/jquery-medium.png" alt="jQuery" />
-                </div>
+                    <div class="carousel-item">
+                        <img src="~/Content/img/bootstrap-stack.png" alt="Bootstrap" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/Content/img/jquery-medium.png" alt="jQuery" />
+                    </div>
+                }
+                else
+                {
+                    <div class="carousel-item active">
+                        <img src="https://codeopinion.com/wp-content/uploads/2017/06/Bitmap-MEDIUM_ASP.NET-Core-MVC-Logo_2colors_Square_Boxed_RGB.png" alt="ASP.Net Core MVC" />
+                        <div class="carousel-caption d-none d-md-block">
+                            <p>Image Source: codeopinion.com</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://codeopinion.com/wp-content/uploads/2017/10/Bitmap-MEDIUM_Entity-Framework-Core-Logo_2colors_Square_Boxed_RGB.png" alt="Entity Framework Core" />
+                        <div class="carousel-caption d-none d-md-block">
+                            <p>Image Source: codeopinion.com</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://getbootstrap.com/docs/4.1/assets/img/bootstrap-stack.png" alt="Bootstrap" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://www.mojos.it/wordpress/wp-content/uploads/2013/05/jquery-logo-1024x511.png" alt="jQuery" />
+                    </div>
+                }
             </div>
             <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

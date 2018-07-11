@@ -1,7 +1,13 @@
-﻿<h2>HTTP @ViewBag.StatusCode Error</h2>
+﻿@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnv
+
+<h2>HTTP @ViewBag.StatusCode Error</h2>
 
 <h3 class="alert-warning">Error Message: @ViewBag.Message</h3>
 
 <br />
-<h5>Stack Trace:</h5>
-<p>@ViewData["StackTrace"]</p>
+
+@if (hostingEnv.EnvironmentName == "Development")
+{
+    <h5>Stack Trace:</h5>
+    <p>@ViewData["StackTrace"]</p>
+}

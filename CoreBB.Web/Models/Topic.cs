@@ -12,7 +12,7 @@ namespace CoreBB.Web.Models
         }
 
         public int Id { get; set; }
-        public int OwnerId { get; set; }
+        public int? OwnerId { get; set; }
         public int ForumId { get; set; }
         public int? RootTopicId { get; set; }
         public int? ReplyToTopicId { get; set; }

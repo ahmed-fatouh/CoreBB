@@ -24,6 +24,7 @@ namespace CoreBB.Web
                 {
                     option.LoginPath = "/User/Login";
                     option.AccessDeniedPath = "/Error/AccessDenied";
+                    //The next option requires Cookie Authentication to be done over HTTPS only 
                     option.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
         }
