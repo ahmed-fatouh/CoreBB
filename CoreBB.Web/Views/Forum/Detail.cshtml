@@ -1,0 +1,76 @@
+﻿@model Forum
+
+@{
+    ViewData["Title"] = "Forum Details";
+}
+
+<div class="container">
+    <div class="card border-info mt-5">
+        <h2 class="card-header bg-info text-white">Forum Details</h2>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <td>ID</td>
+                        <td>@Model.Id</td>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>@Model.Name</td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td>@Model.Description</td>
+                    </tr>
+                    <tr>
+                        <td>Date Created</td>
+                        <td>@Model.CreateDateTime.ToShortDateString()</td>
+                    </tr>
+                    <tr>
+                        <td>Owner</td>
+                        <td><a asp-action="Detail" asp-controller="User"
+                               asp-route-name="@Model.Owner.Name">@Model.Owner.Name</a></td>
+                    </tr>
+                    <tr>
+                        <td>Locked?</td>
+                        <td><input asp-for="@Model.IsLocked" disabled /></td>
+                    </tr>
+                    @if (User.IsInRole(Roles.Administrator) && User.Identity.Name == Model.Owner.Name)
+                    {
+                        <tr>
+                            <td colspan="2" class="text-center">
+                                <a asp-action="Edit" asp-route-forumId="@Model.Id" class="btn btn-warning m-1">Edit Info</a>
+                                <button class="btn btn-danger delete" type="button" value="@Model.Id">Delete</button>
+                            </td>
+                        </tr>
+                    }        
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(".delete").on("click", function (events) {
+        var value = $(this).attr("value");
+        $.ajax({
+            url: '/Forum/Delete',
+            context: this,
+            type: 'GET',
+            data: { forumId: value },
+            success: function (data) {
+                $(this).parents(".card").after(data);
+            },
+            error: function () {
+                $(this).parents(".card").after('<p class="text-danger">Error! Can\'t get resource.</p>');
+            }
+        });
+        $(this).hide();
+    });
+
+    $(document).on("click", ".cancel", function (events) {
+        $(this).parents(".container").find("button").show();
+        $(this).parents(".card").remove();
+    })
+</script>

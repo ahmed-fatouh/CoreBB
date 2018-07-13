@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Forum>
+@inject CoreBBContext _dbContext
+
+@{
+    ViewData["Title"] = "Forums";
+}
+
+<div class="container">
+    <div class="card border-info mt-5">
+        <h2 class="card-header bg-info text-white">Forums</h2>
+        <div class="card-body">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Creation Date</th>
+                        <th>Topics Count</th>
+                        <th>Owner</th>
+                        <th>Locked?</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Forum f in Model)
+                    {
+                        <tr>
+                            <td>@f.Id</td>
+                            <td><a asp-action="Index" asp-controller="Topic" 
+                                   asp-route-forumId="@f.Id">@f.Name</a></td>
+                            <td>@f.CreateDateTime.ToShortDateString()</td>
+                            <td>@_dbContext.Topic.Count(t => t.ForumId == f.Id && t.ReplyToTopicId == null)</td>
+                            <td><a asp-action="Detail" asp-controller="User"
+                                   asp-route-name="@f.Owner.Name">@f.Owner.Name</a></td>
+                            <td><input type="checkbox" asp-for="@f.IsLocked" disabled /></td>
+                            <td><a asp-action="Detail" asp-route-forumId="@f.Id"
+                                   class="btn btn-primary btn-sm">Details</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
