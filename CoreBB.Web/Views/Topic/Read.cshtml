@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Topic>
+@inject CoreBBContext _dbContext
+
+@{
+    Topic rootTopic = Model.SingleOrDefault(t => t.Id == t.RootTopicId);
+    ViewData["Title"] = rootTopic.Title;
+    User user = _dbContext.User.SingleOrDefault(u => u.Name == User.Identity.Name);
+    Forum forum = _dbContext.Forum.SingleOrDefault(f => f.Id == rootTopic.ForumId);
+}
+
+<div class="col-10 offset-1 mt-5">
+    <h2 class="card-header bg-info text-white">@(rootTopic.Title + (rootTopic.IsLocked || forum.IsLocked ? " [Locked]" : ""))</h2>
+
+    @foreach (Topic t in Model)
+    {
+        <div class="post">
+            <div class="card border-info p-3 mt-1">
+                <p>@t.Content</p>
+                <div class="card-footer">
+                    @if ((User.Identity.Name != null && User.Identity.Name == t.Owner?.Name &&
+                        !rootTopic.IsLocked && !forum.IsLocked && !user.IsLocked) ||
+                        User.IsInRole(Roles.Administrator))
+                    {
+                        <button type="button" class="btn edit mr-3" value="@t.Id">Edit</button>
+                        <button type="button" class="btn btn-danger delete" value="@t.Id">Delete</button>
+                    }
+
+                    <div class="float-right">
+                        <small>Posted at: @t.PostDateTime by <em>
+                                 @(t.OwnerId != null ? Html.ActionLink(t.Owner.Name, "Detail", "User", new { name = t.Owner.Name })
+                                    : Html.Raw("anonymous"))
+                            </em>
+                        </small> 
+                        @if (t.ModifyDateTime != null)
+                        {
+                            <br />
+                            <small>Modified at: @t.ModifyDateTime by <em>
+                                @(t.ModifiedByUserId != null ? Html.ActionLink(t.ModifiedByUser.Name, "Detail", "User", new { name = t.ModifiedByUser.Name }) 
+                                    : Html.Raw("anonymous"))
+                            </em>
+                        </small>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    @if (!rootTopic.IsLocked && !forum.IsLocked && User.Identity.IsAuthenticated && (!user?.IsLocked ?? false))
+    {
+        <div class="post">
+            <button type="button" class="btn btn-primary m-1 reply" id="@Model.Last().Id">Reply</button>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    var getFormOnClick = function (selector, formType) {
+        $(selector).on("click", function (events) {
+            var id = $(this).attr("value");
+            $.ajax({
+                url: '/Topic/GetActionForm',
+                context: this,
+                type: 'GET',
+                data: { topicId: id, formType: formType },
+                success: function (data) {
+                    $(this).parents(".card").after(data);
+                },
+                error: function () {
+                    $(this).parents(".card").after('<p class="text-danger">Error! Refresh the page.</p>');
+                }
+            });
+            $(this).hide();
+            $(this).siblings("button").hide();
+        });
+    }
+
+    getFormOnClick(".edit", "edit");
+    getFormOnClick(".delete", "delete");
+
+    $(document).on("click", ".cancel", function (events) {
+        $(this).parents(".post").find("button").show();
+        $(this).parents(".card").remove();
+    })
+
+    $(document).on("click", ".reply", function (events) {
+        $(this).before('@await Component.InvokeAsync("Reply", new Topic {
+                      ForumId = rootTopic.ForumId,
+                      RootTopicId = rootTopic.RootTopicId,
+                      ReplyToTopicId = Model.Last().Id
+     })');
+        $(this).hide();
+    });
+</script>
