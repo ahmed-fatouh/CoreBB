@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Message>
+@inject CoreBBContext _dbContext
+
+@{
+    User user = _dbContext.User.SingleOrDefault(u => u.Name == User.Identity.Name);
+    ViewData["Title"] = "Messages";
+}
+
+<div class="col-10 offset-1 mt-5">
+
+    @foreach (Message m in Model)
+    {
+        <div class="post">
+            <div class="card border-info mb-3 p-0 col-10 @(m.ToUserId == user.Id ? "offset-2 float-right" : "")">
+                <h3 class="card-header-pills text-white m-0
+                    @(m.ToUserId == user.Id ? "bg-primary" : "bg-secondary")">&nbsp;@m.FromUser.Name</h3>
+                <p class="mt-1 ml-3">@m.Content</p>
+                <div class="card-footer">
+                    @if ((user.Id == m.FromUserId))
+                    {
+                        <button type="button" class="btn btn-danger delete" value="@m.Id">Delete</button>
+                        <em>@(m.IsRead ? "(Seen)" : "")</em>
+                    }
+                    <div class="float-right">
+                        <small>Sent at: @m.SendDateTime</small>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    <br />
+    <br />
+    @if (!user.IsLocked)
+    {
+        @await Html.PartialAsync("SendMessage", new Message { FromUserId= user.Id, ToUserId= ViewBag.SendToUserId})
+    }
+</div>
+
+
+
+<script type="text/javascript">
+    var getFormOnClick = function (selector) {
+        $(selector).on("click", function (events) {
+            var id = $(this).attr("value");
+            $.ajax({
+                url: '/Message/Delete',
+                context: this,
+                type: 'GET',
+                data: { messageId: id },
+                success: function (data) {
+                    $(this).parents(".card").after(data);
+                },
+                error: function () {
+                    $(this).parents(".card").after('<p class="text-danger">Error! Refresh the page.</p>');
+                }
+            });
+            $(this).hide();
+            $(this).siblings("button").hide();
+        });
+    }
+
+    getFormOnClick(".delete");
+
+    $(document).on("click", ".cancel", function (events) {
+        $(this).parents(".post").find("button").show();
+        $(this).parents(".card").remove();
+    })
+</script>

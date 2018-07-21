@@ -1,0 +1,23 @@
+﻿@model Message
+
+@{
+    ViewData["Title"] = "Send Message";
+}
+
+<div class="container">
+    <div class="card border-info">
+        <h2 class="card-header bg-info text-white">Send Message</h2>
+        <div class="card-body">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <form asp-action="Send" asp-route-toUserId="@Model.ToUserId" method="post">
+                <div class="form-group">
+                    <label asp-for="Content"></label>
+                    <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+                </div>
+                <input type="hidden" asp-for="FromUserId" />
+                <input type="hidden" asp-for="ToUserId" />
+                <button type="submit" class="btn btn-primary float-right">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
