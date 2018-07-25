@@ -1,0 +1,19 @@
+﻿@model Topic
+<div class="card border-danger p-3 mt-1">
+    <div class="card-header-pills p-1">
+        <h5 style="display: inline-block;">Delete</h5>
+        <button type="button" class="btn btn-sm float-right cancel">X</button>
+    </div>
+    <form asp-action="Delete" method="post">
+        @if (Model.Id == Model.RootTopicId)
+        {
+            <p><strong>All the Topic and its Replies will be deleted.</strong></p>
+        }
+        <p>Are you sure you want to delete?</p>
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ForumId" />
+        <input type="hidden" asp-for="RootTopicId" />
+        <input type="hidden" asp-for="ReplyToTopicId" />
+        <button type="submit" class="btn btn-danger btn-sm m-1 float-right">Sure, Delete</button>
+    </form>
+</div>

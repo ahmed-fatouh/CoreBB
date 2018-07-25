@@ -1,0 +1,48 @@
+﻿@model User
+@inject CoreBBContext _dbContext
+
+<div class="card border-danger p-3 mt-1">
+    <div class="card-header-pills p-1">
+        <h5 style="display: inline-block;">Delete</h5>
+        <button type="button" class="btn btn-sm float-right cancel">X</button>
+    </div>
+    <div class="card-body">
+        @if (Model.IsAdministrator)
+        {
+            var admins = _dbContext.User.Where(u => u.IsAdministrator);
+            if (admins.Count() == 1)
+            {
+                <p><strong>You are the only Administrator.</strong></p>
+                <p>Create another admin to delete the current.</p>
+            }
+            else
+            {
+                var firstAdminName = admins.Where(a => a.Name != Model.Name).OrderBy(a => a.RegisterDateTime).First().Name;
+                <p><strong>Take Care! You won't be able to access the forum again.</strong></p>
+                <br />
+                <p>
+                    All of your forums will be assigned to the oldest admin
+                    "<a asp-action="Detail" asp-route-name="@firstAdminName"><em>@firstAdminName</em></a>".
+                </p>
+                <p>Also, all of your topics will be anonyomized.</p>
+                <p><strong>Are you sure you want to be permenantely deleted?</strong></p>
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Name" />
+                    <button type="submit" class="btn btn-danger float-right">Sure, Delete</button>
+                </form>
+            }
+        }
+        else
+        {
+            <p><strong>Take Care! You won't be able to access the forum again.</strong></p>
+            <br />
+            <p>All of your topics will be anonyomized.</p>
+            <p><strong>Are you sure you want to be permenantely deleted?</strong></p>
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Name" />
+                <button type="submit" class="btn btn-danger float-right">Sure, Delete</button>
+            </form>
+        }
+    </div>
+</div>
+   

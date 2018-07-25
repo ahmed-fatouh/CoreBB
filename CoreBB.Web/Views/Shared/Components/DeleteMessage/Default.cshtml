@@ -1,0 +1,15 @@
+﻿@model Message
+<div class="card border-danger p-3 mt-1">
+    <div class="card-header-pills p-1">
+        <h5 style="display: inline-block;">Delete</h5>
+        <button type="button" class="btn btn-sm float-right cancel">X</button>
+    </div>
+    <p>Are you sure you want to permenantly delete the Message?</p>
+    <br />
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="FromUserId" />
+        <input type="hidden" asp-for="ToUserId" />
+        <button type="submit" class="btn btn-danger btn-sm m-1 float-right">Sure, Delete</button>
+    </form>
+</div>
